@@ -15,7 +15,7 @@ var isTerminal bool
 
 func main() {
 	if len(os.Args) < 2 || os.Args[1] == "" {
-		fmt.Println("track_url is needed: audius <track_url>")
+		fmt.Println("track_url is needed: audiusdl <track_url>")
 		return
 	}
 

@@ -3,8 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"os"
-	"regexp"
 	"strings"
 	"sync"
 
@@ -34,10 +34,20 @@ func main() {
 	}
 
 	trackUrl := os.Args[1]
-	r := regexp.MustCompile(`audius\.co\/(\w.+)\/(\w.+)`)
-	match := r.FindStringSubmatch(trackUrl)
-	artistId := match[1]
-	trackId := match[2]
+	u, err := url.Parse(trackUrl)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	path := strings.Split(u.Path, "/")
+	if len(path) != 3 {
+		fmt.Println("Error: invalid track url")
+		return
+	}
+
+	artistId := path[1]
+	trackId := path[2]
 
 	resp, err := getContent(discoveryNodes, fmt.Sprintf("/v1/full/tracks?handle=%s&slug=%s", artistId, trackId), "", "application/json")
 	if err != nil {
